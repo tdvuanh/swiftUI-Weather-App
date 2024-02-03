@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isNight = false
+    @StateObject private var locationPermission:LocationPermission = LocationPermission()
+    
     var body: some View {
         ZStack {
             BackgroundView(isNight: $isNight)
@@ -23,7 +25,6 @@ struct ContentView: View {
                     WeatherDayView(dayOfWeek: "SAT", imageName: "cloud.hail.fill", temperature: 28)
                 }
                 Spacer()
-                
                 Button {
                     isNight.toggle()
                 } label: {
@@ -31,7 +32,9 @@ struct ContentView: View {
                 }
                 Spacer()
             }
-        }
+        }.onAppear(perform: {
+            locationPermission.requestLocationPermission()
+        })
     }
 
     
@@ -46,7 +49,7 @@ struct WeatherDayView: View {
         VStack {
             Text(dayOfWeek).font(.system(size: 16, weight: .medium, design: .default)).foregroundColor(.white)
             Image(systemName: imageName).renderingMode(.original).resizable().aspectRatio(contentMode: .fit).frame(width: 40, height: 40)
-            Text("\(temperature)").font(.system(size: 28, weight: .medium)).foregroundColor(.white)
+            Text("\(temperature)°C").font(.system(size: 16, weight: .medium, design: .monospaced)).foregroundColor(.white)
         }
     }
 }
@@ -63,7 +66,7 @@ struct CityTextView: View {
     var cityName: String
     
     var body: some View {
-        Text(cityName).font(.system(size: 32, weight: .medium, design: .default)).foregroundColor(.white)
+        Text(cityName).font(.system(size: 32, weight: .medium, design: .default)).foregroundColor(.white).padding(.top)
     }
 }
 
@@ -74,7 +77,7 @@ struct WeatherStatusView: View {
     var body: some View {
         VStack(spacing: 10) {
             Image(systemName: imageName).renderingMode(.original).resizable().aspectRatio(contentMode: .fit).frame(width: 180, height: 180)
-            Text("\(temperature)").font(.system(size: 70, weight: .medium)).foregroundColor(.white)
+            Text("\(temperature)°C").font(.system(size: 70, weight: .medium, design: .monospaced)).foregroundColor(.white)
         }.padding(.bottom, 40)
     }
 }
